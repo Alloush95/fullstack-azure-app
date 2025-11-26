@@ -44,7 +44,7 @@ resource "azurerm_linux_web_app" "backend" {
 
   site_config {
     always_on = false
-    
+
     application_stack {
       docker_image_name   = var.backend_image
       docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
@@ -52,11 +52,11 @@ resource "azurerm_linux_web_app" "backend" {
   }
 
   app_settings = {
-    "WEBSITES_PORT"                       = "3000"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
-    "NODE_ENV"                            = "production"
+    "WEBSITES_PORT"                   = "3000"
+    "DOCKER_REGISTRY_SERVER_URL"      = "https://${azurerm_container_registry.acr.login_server}"
+    "DOCKER_REGISTRY_SERVER_USERNAME" = azurerm_container_registry.acr.admin_username
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = azurerm_container_registry.acr.admin_password
+    "NODE_ENV"                        = "production"
   }
 
   tags = {
@@ -73,7 +73,7 @@ resource "azurerm_linux_web_app" "frontend" {
 
   site_config {
     always_on = false
-    
+
     application_stack {
       docker_image_name   = var.frontend_image
       docker_registry_url = "https://${azurerm_container_registry.acr.login_server}"
@@ -81,11 +81,11 @@ resource "azurerm_linux_web_app" "frontend" {
   }
 
   app_settings = {
-    "WEBSITES_PORT"                       = "80"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.acr.admin_password
-    "REACT_APP_API_URL"                   = "https://${azurerm_linux_web_app.backend.default_hostname}"
+    "WEBSITES_PORT"                   = "80"
+    "DOCKER_REGISTRY_SERVER_URL"      = "https://${azurerm_container_registry.acr.login_server}"
+    "DOCKER_REGISTRY_SERVER_USERNAME" = azurerm_container_registry.acr.admin_username
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = azurerm_container_registry.acr.admin_password
+    "REACT_APP_API_URL"               = "https://${azurerm_linux_web_app.backend.default_hostname}"
   }
 
   tags = {
