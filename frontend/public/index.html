@@ -3,9 +3,41 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Full Stack App</title>
+    <title>Full Stack Azure App</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        background-color: #282c34;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+      }
+      h1 { font-size: 3em; margin: 0.5em; }
+      p { font-size: 1.5em; }
+      #status { color: #61dafb; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <h1>🚀 Full Stack Azure App</h1>
+    <p>Frontend is running!</p>
+    <p id="status">Checking backend...</p>
+    
+    <script>
+      const backendUrl = 'https://app-backend-dev-ilv5yt.azurewebsites.net';
+      fetch(`${backendUrl}/api/health`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('status').textContent = `✅ Backend is ${data.status} at ${data.timestamp}`;
+        })
+        .catch(() => {
+          document.getElementById('status').textContent = '❌ Backend not reachable';
+        });
+    </script>
   </body>
 </html>

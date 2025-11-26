@@ -1,0 +1,73 @@
+2025-11-26T20:50:14.8208863Z Container start method called.
+2025-11-26T20:50:14.8697900Z Establishing network.
+2025-11-26T20:50:14.8703801Z Pulling image: acrfullstackdev.azurecr.io/backend:latest.
+2025-11-26T20:50:16.6442220Z Container pull image failed with reason: ImagePullFailure. Revert by terminate.
+2025-11-26T20:50:16.6526465Z Container is terminating. Grace period: 5 seconds.
+2025-11-26T20:50:16.6543367Z Container spec TerminationMessagePolicy  path 
+2025-11-26T20:50:16.6625304Z Container is terminated. Total time elapsed: 8 ms.
+2025-11-26T20:50:16.6632025Z Site container: app-backend-dev-ilv5yt terminated during site startup.
+2025-11-26T20:50:16.6920991Z Failed to start site. Revert by stopping site.
+2025-11-26T20:50:16.7030292Z Site: app-backend-dev-ilv5yt stopped.
+2025-11-26T20:50:21.819Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:50:22.227Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 9dce5f51-2030-406c-b7c2-d24b42f4a423\"}]}"}
+
+2025-11-26T20:50:22.235Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:50:22.427Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 3c41d549-41d2-4a4a-83d4-920b434a574b\"}]}"}
+
+2025-11-26T20:50:22.438Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:50:22.456Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:50:22.498Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.
+2025-11-26T20:50:36.319Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:50:41.086Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 3304de56-9012-4c21-beff-c7d08b112861\"}]}"}
+
+2025-11-26T20:50:41.087Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:50:43.292Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 935de750-60fa-47d6-878f-86cb838ff8f0\"}]}"}
+
+2025-11-26T20:50:43.302Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:50:43.455Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:50:43.495Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.
+2025-11-26T20:50:55.823Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:50:57.132Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: d52da8e1-03c3-486f-b273-73f512acc3d1\"}]}"}
+
+2025-11-26T20:50:57.150Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:50:59.068Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 9aeb5d4b-8907-4602-aaf3-eddbf9ceed2f\"}]}"}
+
+2025-11-26T20:50:59.069Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:50:59.250Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:50:59.270Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.
+2025-11-26T20:51:10.305Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:51:11.563Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 74555b3d-3641-489b-a341-c08322f71a0f\"}]}"}
+
+2025-11-26T20:51:11.565Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:51:12.836Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: d316d6f2-c404-4604-b577-6d3d1f5076bd\"}]}"}
+
+2025-11-26T20:51:12.854Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:51:12.975Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:51:13.007Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.
+2025-11-26T20:53:41.088Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:53:42.644Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 05b32ee5-40f4-4a01-918b-82c62387e8aa\"}]}"}
+
+2025-11-26T20:53:42.646Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:53:43.148Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 7ba348d4-92f0-42eb-9f80-92a1533723b3\"}]}"}
+
+2025-11-26T20:53:43.149Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:53:43.198Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:53:43.239Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.
+2025-11-26T20:56:14.219Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:56:14.555Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: c73d19bf-679f-4965-877a-4baaa019975f\"}]}"}
+
+2025-11-26T20:56:14.557Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:56:14.631Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 9df6dd00-250b-46c7-9ab5-fdbbf3b5c1d9\"}]}"}
+
+2025-11-26T20:56:14.631Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:56:14.647Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:56:14.659Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.
+2025-11-26T20:58:41.927Z INFO  - Pulling image: acrfullstackdev.azurecr.io/backend:latest
+2025-11-26T20:58:42.022Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 8fedd032-8922-4c37-86a6-b46eab7f5f2e\"}]}"}
+
+2025-11-26T20:58:42.024Z ERROR - Pulling docker image acrfullstackdev.azurecr.io/backend:latest failed:
+2025-11-26T20:58:42.100Z ERROR - DockerApiException: Docker API responded with status code=InternalServerError, response={"message":"Head \"https://acrfullstackdev.azurecr.io/v2/backend/manifests/latest\": unauthorized: {\"errors\":[{\"code\":\"UNAUTHORIZED\",\"message\":\"authentication required, visit https://aka.ms/acr/authorization for more information. CorrelationId: 57f18749-19ed-45b1-a049-5d2d837d7323\"}]}"}
+
+2025-11-26T20:58:42.102Z WARN  - Image pull failed. Defaulting to local copy if present.
+2025-11-26T20:58:42.110Z ERROR - Image pull failed: Verify docker image configuration and credentials (if using private repository)
+2025-11-26T20:58:42.119Z INFO  - Stopping site app-backend-dev-ilv5yt because it failed during startup.

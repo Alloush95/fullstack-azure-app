@@ -4,67 +4,138 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_WORKING_DIR: ./infra
+
 jobs:
   infrastructure:
+    name: Provision infrastructure (Terraform)
     runs-on: ubuntu-latest
     outputs:
       acr_login_server: ${{ steps.tf_output.outputs.acr_login_server }}
       backend_app: ${{ steps.tf_output.outputs.backend_app_name }}
       frontend_app: ${{ steps.tf_output.outputs.frontend_app_name }}
       resource_group: ${{ steps.tf_output.outputs.resource_group_name }}
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - uses: hashicorp/setup-terraform@v3
-    
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: Terraform Init
-      working-directory: ./infra
-      run: terraform init
-    
-    - name: Terraform Apply
-      working-directory: ./infra
-      run: terraform apply -auto-approve
-    
-    - name: Get Outputs
-      id: tf_output
-      working-directory: ./infra
-      run: |
-        echo "acr_login_server=$(terraform output -raw acr_login_server)" >> $GITHUB_OUTPUT
-        echo "backend_app_name=$(terraform output -raw backend_app_name)" >> $GITHUB_OUTPUT
-        echo "frontend_app_name=$(terraform output -raw frontend_app_name)" >> $GITHUB_OUTPUT
-        echo "resource_group_name=$(terraform output -raw resource_group_name)" >> $GITHUB_OUTPUT
-  
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform fmt
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform fmt -check
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate
+
+      - name: Terraform plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform plan -input=false -no-color
+
+      - name: Terraform apply
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform apply -input=false -auto-approve -no-color
+
+      - name: Read Terraform outputs
+        id: tf_output
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "acr_login_server=$(terraform output -raw acr_login_server)" >> $GITHUB_OUTPUT
+          echo "backend_app_name=$(terraform output -raw backend_app_name)" >> $GITHUB_OUTPUT
+          echo "frontend_app_name=$(terraform output -raw frontend_app_name)" >> $GITHUB_OUTPUT
+          echo "resource_group_name=$(terraform output -raw resource_group_name)" >> $GITHUB_OUTPUT
+
   deploy:
+    name: Build & Deploy Containers
     needs: infrastructure
     runs-on: ubuntu-latest
+    env:
+      ACR_LOGIN_SERVER: ${{ needs.infrastructure.outputs.acr_login_server }}
+      BACKEND_APP: ${{ needs.infrastructure.outputs.backend_app }}
+      FRONTEND_APP: ${{ needs.infrastructure.outputs.frontend_app }}
+      RESOURCE_GROUP: ${{ needs.infrastructure.outputs.resource_group }}
+      IMG_TAG: ${{ github.sha }}
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: Build and Deploy
-      env:
-        ACR_LOGIN_SERVER: ${{ needs.infrastructure.outputs.acr_login_server }}
-        BACKEND_APP: ${{ needs.infrastructure.outputs.backend_app }}
-        FRONTEND_APP: ${{ needs.infrastructure.outputs.frontend_app }}
-        RESOURCE_GROUP: ${{ needs.infrastructure.outputs.resource_group }}
-      run: |
-        az acr login --name $(echo $ACR_LOGIN_SERVER | cut -d'.' -f1)
-        
-        docker build -t $ACR_LOGIN_SERVER/backend:latest ./backend
-        docker push $ACR_LOGIN_SERVER/backend:latest
-        
-        docker build -t $ACR_LOGIN_SERVER/frontend:latest ./frontend
-        docker push $ACR_LOGIN_SERVER/frontend:latest
-        
-        az webapp config container set -n $BACKEND_APP -g $RESOURCE_GROUP \
-          --docker-custom-image-name $ACR_LOGIN_SERVER/backend:latest
-        
-        az webapp config container set -n $FRONTEND_APP -g $RESOURCE_GROUP \
-          --docker-custom-image-name $ACR_LOGIN_SERVER/frontend:latest
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id:  ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Extract ACR name
+        id: acr_name
+        run: echo "name=${ACR_LOGIN_SERVER%%.*}" >> $GITHUB_OUTPUT
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: ACR Login
+        run: az acr login --name ${{ steps.acr_name.outputs.name }}
+
+      # -------------------- BACKEND --------------------
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ env.ACR_LOGIN_SERVER }}/backend:${{ env.IMG_TAG }}
+            ${{ env.ACR_LOGIN_SERVER }}/backend:latest
+          cache-from: type=registry,ref=${{ env.ACR_LOGIN_SERVER }}/backend:buildcache
+          cache-to: type=registry,ref=${{ env.ACR_LOGIN_SERVER }}/backend:buildcache,mode=max
+
+      # -------------------- FRONTEND --------------------
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ env.ACR_LOGIN_SERVER }}/frontend:${{ env.IMG_TAG }}
+            ${{ env.ACR_LOGIN_SERVER }}/frontend:latest
+          cache-from: type=registry,ref=${{ env.ACR_LOGIN_SERVER }}/frontend:buildcache
+          cache-to: type=registry,ref=${{ env.ACR_LOGIN_SERVER }}/frontend:buildcache,mode=max
+
+      # ----------------- SET CONTAINERS -----------------
+      - name: Update Backend WebApp
+        run: |
+          az webapp config container set \
+            -n "$BACKEND_APP" \
+            -g "$RESOURCE_GROUP" \
+            --docker-custom-image-name "$ACR_LOGIN_SERVER/backend:${IMG_TAG}"
+
+      - name: Update Frontend WebApp
+        run: |
+          az webapp config container set \
+            -n "$FRONTEND_APP" \
+            -g "$RESOURCE_GROUP" \
+            --docker-custom-image-name "$ACR_LOGIN_SERVER/frontend:${IMG_TAG}"
+
+      - name: Restart Web Apps
+        run: |
+          az webapp restart -n "$BACKEND_APP" -g "$RESOURCE_GROUP"
+          az webapp restart -n "$FRONTEND_APP" -g "$RESOURCE_GROUP"
