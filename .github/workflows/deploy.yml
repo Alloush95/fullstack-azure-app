@@ -4,14 +4,42 @@ on:
   push:
     branches: [ main ]
 
-env:
-  ACR_LOGIN_SERVER: acrfullstackdev.azurecr.io
-  RESOURCE_GROUP: rg-fullstack-app
-  BACKEND_APP: app-backend-dev-ilv5yt
-  FRONTEND_APP: app-frontend-dev-ilv5yt
-
 jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    outputs:
+      acr_login_server: ${{ steps.tf_output.outputs.acr_login_server }}
+      backend_app: ${{ steps.tf_output.outputs.backend_app_name }}
+      frontend_app: ${{ steps.tf_output.outputs.frontend_app_name }}
+      resource_group: ${{ steps.tf_output.outputs.resource_group_name }}
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: hashicorp/setup-terraform@v3
+    
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Terraform Init
+      working-directory: ./infra
+      run: terraform init
+    
+    - name: Terraform Apply
+      working-directory: ./infra
+      run: terraform apply -auto-approve
+    
+    - name: Get Outputs
+      id: tf_output
+      working-directory: ./infra
+      run: |
+        echo "acr_login_server=$(terraform output -raw acr_login_server)" >> $GITHUB_OUTPUT
+        echo "backend_app_name=$(terraform output -raw backend_app_name)" >> $GITHUB_OUTPUT
+        echo "frontend_app_name=$(terraform output -raw frontend_app_name)" >> $GITHUB_OUTPUT
+        echo "resource_group_name=$(terraform output -raw resource_group_name)" >> $GITHUB_OUTPUT
+  
   deploy:
+    needs: infrastructure
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -21,8 +49,13 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     
     - name: Build and Deploy
+      env:
+        ACR_LOGIN_SERVER: ${{ needs.infrastructure.outputs.acr_login_server }}
+        BACKEND_APP: ${{ needs.infrastructure.outputs.backend_app }}
+        FRONTEND_APP: ${{ needs.infrastructure.outputs.frontend_app }}
+        RESOURCE_GROUP: ${{ needs.infrastructure.outputs.resource_group }}
       run: |
-        az acr login --name acrfullstackdev
+        az acr login --name $(echo $ACR_LOGIN_SERVER | cut -d'.' -f1)
         
         docker build -t $ACR_LOGIN_SERVER/backend:latest ./backend
         docker push $ACR_LOGIN_SERVER/backend:latest
