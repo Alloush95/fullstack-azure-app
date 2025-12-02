@@ -1,10 +1,8 @@
 #!/bin/sh
-# Generate runtime config
+set -e
 cat > /usr/share/nginx/html/config.js <<EOF
 window.ENV = {
   REACT_APP_API_URL: "${REACT_APP_API_URL:-http://localhost:3000}"
 };
 EOF
-
-echo "Runtime config generated successfully"
-echo "API URL: ${REACT_APP_API_URL:-http://localhost:3000}"
+echo "Config generated with API URL: ${REACT_APP_API_URL:-http://localhost:3000}"
