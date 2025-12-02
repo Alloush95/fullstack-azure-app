@@ -7,7 +7,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+    const apiUrl = window.ENV?.REACT_APP_API_URL || process.env.REACT_APP_API_URL || 'http://localhost:3000';
     
     // Fetch health status
     fetch(`${apiUrl}/api/health`)
