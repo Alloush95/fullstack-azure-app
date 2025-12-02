@@ -8,8 +8,7 @@ RUN npm run build
 FROM nginx:1.25-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY env.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+COPY env.sh /usr/local/bin/env.sh
+RUN chmod +x /usr/local/bin/env.sh
 EXPOSE 80
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["nginx","-g","daemon off;"]
+CMD ["/bin/sh", "-c", "/usr/local/bin/env.sh && nginx -g 'daemon off;'"]

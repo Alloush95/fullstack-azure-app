@@ -1,6 +1,4 @@
 #!/bin/sh
-set -e
-
 # Generate runtime config
 cat > /usr/share/nginx/html/config.js <<EOF
 window.ENV = {
@@ -8,7 +6,5 @@ window.ENV = {
 };
 EOF
 
-echo "Runtime config generated with API URL: ${REACT_APP_API_URL:-http://localhost:3000}"
-
-# Execute the CMD from Dockerfile
-exec "$@"
+echo "Runtime config generated successfully"
+echo "API URL: ${REACT_APP_API_URL:-http://localhost:3000}"
